@@ -1,0 +1,17 @@
+{
+    "name": "hulang/php-pscws",
+    "description": "基于PSCWS4的中文分词工具",
+    "version": "1.0.0",
+    "authors": [{
+        "name": "hulang",
+        "email": "hulangfy@163.com"
+    }],
+    "require": {
+        "php": ">=5.4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "hulang\\": "src/"
+        }
+    }
+}
