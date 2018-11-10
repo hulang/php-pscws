@@ -1,6 +1,7 @@
 主要是收藏起来
 # 基于PSCWS4词库的PHP中文分词工具
 词库官方网址：http://www.xunsearch.com/scws/<br>
+XDB 词典文件[简体中文(UTF-8) (3.9MB，28万词，2016/02/24更新)] <br>
 这是用纯 PHP 代码实现的 C 版 Libscws 的全部功能，即第四版的 PSCWS<br>
 PSCWS4 使用文档：http://www.xunsearch.com/scws/docs.php#pscws4<br>
 <hr>
