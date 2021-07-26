@@ -3,13 +3,13 @@
 /**
  * PSCWS4中文分词工具
  */
+
 namespace hulang;
 
 define('PATH', dirname(__FILE__));
 
 class Scws
 {
-
     /**
      * SCWS中文分词
      *
