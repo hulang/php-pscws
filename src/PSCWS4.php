@@ -93,17 +93,17 @@ class PSCWS4
     var $_wend = 0;
     var $_wmap;
     var $_zmap;
-    function __construct($charset = 'utf8')
+    public function __construct($charset = 'utf8')
     {
         $this->_xd = false;
         $this->_rs = $this->_rd = array();
         $this->set_charset($charset);
     }
-    function __destruct()
+    public function __destruct()
     {
         $this->close();
     }
-    function set_charset($charset = 'utf8')
+    public function set_charset($charset = 'utf8')
     {
         $charset = strtolower(trim($charset));
         if ($charset !== $this->_cs) {
@@ -123,7 +123,7 @@ class PSCWS4
             $this->_ztab[] = 1;
         }
     }
-    function set_dict($fpath)
+    public function set_dict($fpath)
     {
         $xdb = new XDB_R();
         if (!$xdb->Open($fpath)) {
@@ -131,11 +131,11 @@ class PSCWS4
         }
         $this->_xd = $xdb;
     }
-    function set_rule($fpath)
+    public function set_rule($fpath)
     {
         $this->_rule_load($fpath);
     }
-    function set_ignore($yes)
+    public function set_ignore($yes)
     {
         if ($yes == true) {
             $this->_mode |= PSCWS4_IGN_SYMBOL;
@@ -143,7 +143,7 @@ class PSCWS4
             $this->_mode &= ~PSCWS4_IGN_SYMBOL;
         }
     }
-    function set_multi($level)
+    public function set_multi($level)
     {
         $level = (intval($level) << 12);
 
@@ -152,7 +152,7 @@ class PSCWS4
             $this->_mode |= $level;
         }
     }
-    function set_debug($yes)
+    public function set_debug($yes)
     {
         if ($yes == true) {
             $this->_mode |= PSCWS4_DEBUG;
@@ -160,7 +160,7 @@ class PSCWS4
             $this->_mode &= ~PSCWS4_DEBUG;
         }
     }
-    function set_duality($yes)
+    public function set_duality($yes)
     {
         if ($yes == true) {
             $this->_mode |= PSCWS4_DUALITY;
@@ -168,13 +168,13 @@ class PSCWS4
             $this->_mode &= ~PSCWS4_DUALITY;
         }
     }
-    function send_text($text)
+    public function send_text($text)
     {
         $this->_txt = (string)$text;
         $this->_len = strlen($this->_txt);
         $this->_off = 0;
     }
-    function get_result()
+    public function get_result()
     {
         $off = $this->_off;
         $len = $this->_len;
@@ -324,7 +324,7 @@ class PSCWS4
         }
         return $list;
     }
-    function close()
+    public function close()
     {
         if ($this->_xd) {
             $this->_xd->Close();
@@ -333,11 +333,11 @@ class PSCWS4
         $this->_rd = array();
         $this->_rs = array();
     }
-    function version()
+    public function version()
     {
         return sprintf('PSCWS/4.0 - by hightman');
     }
-    function _rule_load($fpath)
+    public function _rule_load($fpath)
     {
         if (!($fd = fopen($fpath, 'r'))) {
             return false;
@@ -459,14 +459,14 @@ class PSCWS4
             }
         }
     }
-    function _rule_get($str)
+    public function _rule_get($str)
     {
         if (!isset($this->_rd[$str])) {
             return false;
         }
         return $this->_rd[$str];
     }
-    function _rule_checkbit($str, $bit)
+    public function _rule_checkbit($str, $bit)
     {
         if (!isset($this->_rd[$str])) {
             return false;
@@ -474,7 +474,7 @@ class PSCWS4
         $bit2 = $this->_rd[$str]['bit'];
         return ($bit & $bit2 ? true : false);
     }
-    function _rule_check($rule, $str)
+    public function _rule_check($rule, $str)
     {
         if (($rule['flag'] & PSCWS4_ZRULE_INCLUDE) && !$this->_rule_checkbit($str, $rule['bit'])) {
             return false;
@@ -484,47 +484,47 @@ class PSCWS4
         }
         return true;
     }
-    function _put_res($o, $i, $l, $a)
+    public function _put_res($o, $i, $l, $a)
     {
         $word = substr($this->_txt, $o, $l);
         $item = array('word' => $word, 'off' => $o, 'idf' => $i, 'len' => $l, 'attr' => $a);
         $this->_res[] = $item;
     }
-    function _is_alnum($c)
+    public function _is_alnum($c)
     {
         return (($c >= 48 && $c <= 57) || ($c >= 65 && $c <= 90) || ($c >= 97 && $c <= 122));
     }
 
-    function _is_alpha($c)
+    public function _is_alpha($c)
     {
         return (($c >= 65 && $c <= 90) || ($c >= 97 && $c <= 122));
     }
 
-    function _is_ualpha($c)
+    public function _is_ualpha($c)
     {
         return ($c >= 65 && $c <= 90);
     }
 
-    function _is_digit($c)
+    public function _is_digit($c)
     {
         return ($c >= 48 && $c <= 57);
     }
 
-    function _no_rule1($f)
+    public function _no_rule1($f)
     {
         return (($f & (PSCWS4_ZFLAG_SYMBOL | PSCWS4_ZFLAG_ENGLISH)) || (($f & (PSCWS4_ZFLAG_WHEAD | PSCWS4_ZFLAG_NR2)) == PSCWS4_ZFLAG_WHEAD));
     }
 
-    function _no_rule2($f)
+    public function _no_rule2($f)
     {
         return $this->_no_rule1($f);
     }
 
-    function _char_token($c)
+    public function _char_token($c)
     {
         return ($c == '(' || $c == ')' || $c == '[' || $c == ']' || $c == '{' || $c == '}' || $c == ':' || $c == '"');
     }
-    function _dict_query($word)
+    public function _dict_query($word)
     {
         if (!$this->_xd) {
             return false;
@@ -536,7 +536,7 @@ class PSCWS4
         $tmp = unpack('ftf/fidf/Cflag/a3attr', $value);
         return $tmp;
     }
-    function _ssegment($end)
+    public function _ssegment($end)
     {
         $start = $this->_off;
         $wlen = $end - $start;
@@ -601,14 +601,14 @@ class PSCWS4
             }
         }
     }
-    function _get_zs($i, $j = -1)
+    public function _get_zs($i, $j = -1)
     {
         if ($j == -1) {
             $j = $i;
         }
         return substr($this->_txt, $this->_zmap[$i]['start'], $this->_zmap[$j]['end'] - $this->_zmap[$i]['start']);
     }
-    function _mget_word($i, $j)
+    public function _mget_word($i, $j)
     {
         $wmap = $this->_wmap;
         if (!($wmap[$i][$i]['flag'] & PSCWS4_ZFLAG_WHEAD)) {
@@ -621,7 +621,7 @@ class PSCWS4
         }
         return $r;
     }
-    function _mset_word($i, $j)
+    public function _mset_word($i, $j)
     {
         $wmap = $this->_wmap;
         $zmap = $this->_zmap;
@@ -715,7 +715,7 @@ class PSCWS4
             } while (++$i <= $j);
         }
     }
-    function _mseg_zone($f, $t)
+    public function _mseg_zone($f, $t)
     {
         $weight = $nweight = 0.0;
         $wmap = &$this->_wmap;
@@ -790,7 +790,7 @@ class PSCWS4
             $m = $n + 1;
         }
     }
-    function _msegment($end, $zlen)
+    public function _msegment($end, $zlen)
     {
         $this->_wmap = array_fill(0, $zlen, array_fill(0, $zlen, false));
         $this->_zmap = array_fill(0, $zlen, false);

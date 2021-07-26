@@ -25,21 +25,15 @@ class XDB_R
     var $fd = false;
     var $hash_base = 0;
     var $hash_prime = 0;
-
-
-    function __construct()
+    public function __construct()
     {
     }
-
-    function __destruct()
+    public function __destruct()
     {
         $this->Close();
     }
-
-
-    function Open($fpath)
+    public function Open($fpath)
     {
-
         $this->Close();
         if (!($fd = @fopen($fpath, 'rb'))) {
             trigger_error("XDB::Open(" . basename($fpath) . ") failed.", E_USER_WARNING);
@@ -50,13 +44,10 @@ class XDB_R
             fclose($fd);
             return false;
         }
-
         $this->fd = $fd;
         return true;
     }
-
-
-    function Get($key)
+    public function Get($key)
     {
 
         if (!$this->fd) {
@@ -67,16 +58,13 @@ class XDB_R
         if ($klen == 0 || $klen > XDB_MAXKLEN) {
             return false;
         }
-
         $rec = $this->_get_record($key);
         if (!isset($rec['vlen']) || $rec['vlen'] == 0) {
             return false;
         }
         return $rec['value'];
     }
-
-
-    function Close()
+    public function Close()
     {
         if (!$this->fd) {
             return;
@@ -84,9 +72,7 @@ class XDB_R
         fclose($this->fd);
         $this->fd = false;
     }
-
-
-    function _get_index($key)
+    public function _get_index($key)
     {
         $l = strlen($key);
         $h = $this->hash_base;
@@ -97,9 +83,7 @@ class XDB_R
         }
         return ($h % $this->hash_prime);
     }
-
-
-    function _check_header($fd)
+    public function _check_header($fd)
     {
         fseek($fd, 0, SEEK_SET);
         $buf = fread($fd, 32);
@@ -110,21 +94,17 @@ class XDB_R
         if ($hdr['tag'] != XDB_TAGNAME) {
             return false;
         }
-
         $fstat = fstat($fd);
         if ($fstat['size'] != $hdr['fsize']) {
             return false;
         }
-
         $this->hash_base = $hdr['base'];
         $this->hash_prime = $hdr['prime'];
         $this->version = $hdr['ver'];
         $this->fsize = $hdr['fsize'];
         return true;
     }
-
-
-    function _get_record($key)
+    public function _get_record($key)
     {
         $this->_io_times = 1;
         $index = ($this->hash_prime > 1 ? $this->_get_index($key) : 0);
@@ -138,8 +118,7 @@ class XDB_R
         }
         return $this->_tree_get_record($tmp['off'], $tmp['len'], $poff, $key);
     }
-
-    function _tree_get_record($off, $len, $poff = 0, $key = '')
+    public function _tree_get_record($off, $len, $poff = 0, $key = '')
     {
         if ($len == 0) {
             return (array('poff' => $poff));
@@ -147,7 +126,9 @@ class XDB_R
         $this->_io_times++;
         fseek($this->fd, $off, SEEK_SET);
         $rlen = XDB_MAXKLEN + 17;
-        if ($rlen > $len) $rlen = $len;
+        if ($rlen > $len) {
+            $rlen = $len;
+        }
         $buf = fread($this->fd, $rlen);
         $rec = unpack('Iloff/Illen/Iroff/Irlen/Cklen', substr($buf, 0, 17));
         $fkey = substr($buf, 17, $rec['klen']);
